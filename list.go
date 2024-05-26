@@ -83,6 +83,7 @@ func (list *List) DelNode(n *Node) {
 	if list.head == n {
 		// head node
 		if n.next != nil {
+			// help GC
 			n.next.prev = nil
 		}
 		list.head = n.next
@@ -90,11 +91,24 @@ func (list *List) DelNode(n *Node) {
 	} else if list.tail == n {
 		// tail node
 		if n.prev != nil {
+			// help GC
 			n.prev.next = nil
 		}
 		list.tail = n.prev
 		n.prev = nil
 	} else {
-
+		if n.prev != nil {
+			n.prev.next = n.next
+		}
+		if n.next != nil {
+			n.next.prev = n.prev
+		}
+		n.prev = nil
+		n.next = nil
 	}
+	list.length -= 1
+}
+
+func (list *List) Delte(val *Gobj) {
+	list.DelNode(list.Find(val))
 }
